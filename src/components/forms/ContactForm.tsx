@@ -8,54 +8,62 @@ export default function ContactForm() {
   const [result, setResult] = useState<{ type: 'success' | 'error' | 'sending' | null, message: string }>({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setResult({ type: 'sending', message: "Sending..." });
-    
-    const formData = new FormData(event.currentTarget);
-    
-    // Add required Web3Forms fields
-    formData.append("access_key", "442a4441-51e6-4817-b08c-4b39ab1ac03e");
-    formData.append("subject", "New Contact Form Submission from Luminary Learning");
-    formData.append("from_name", "Luminary Learning Website");
+ const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  setIsSubmitting(true);
+  setResult({ type: 'sending', message: "Sending..." });
 
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData
-      });
+  const formData = new FormData(event.currentTarget);
 
-      const data = await response.json();
-      
-      if (data.success) {
-        setResult({ 
-          type: 'success', 
-          message: "Thanks! Your message has been sent. We'll get back to you within 24 hours." 
-        });
-        event.currentTarget.reset();
-        
-        // Clear success message after 5 seconds
-        setTimeout(() => {
-          setResult({ type: null, message: "" });
-        }, 5000);
-      } else {
-        console.error("Web3Forms error:", data);
-        setResult({ 
-          type: 'error', 
-          message: data.message || "Something went wrong. Please try again or email us directly." 
-        });
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
-      setResult({ 
-        type: 'error', 
-        message: "Network error. Please check your connection and try again." 
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+  // Convert to a plain object and send as JSON 
+  const payload: Record<string, string> = {
+    access_key: "442a4441-51e6-4817-b08c-4b39ab1ac03e",
+    subject: "New Contact Form Submission from Luminary Learning",
+    from_name: "Luminary Learning Website",
   };
+  formData.forEach((value, key) => {
+    payload[key] = value.toString();
+  });
+
+  try {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setResult({
+        type: 'success',
+        message: "Thanks! Your message has been sent. We'll get back to you within 24 hours.",
+      });
+      (event.target as HTMLFormElement).reset();
+
+      setTimeout(() => {
+        setResult({ type: null, message: "" });
+      }, 5000);
+    } else {
+      console.error("Web3Forms error:", data);
+      setResult({
+        type: 'error',
+        message: data.message || "Something went wrong. Please try again or email us directly.",
+      });
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
+    setResult({
+      type: 'error',
+      message: "Network error. Please check your connection and try again.",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
