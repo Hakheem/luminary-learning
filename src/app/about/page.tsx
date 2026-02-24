@@ -33,7 +33,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
-              <div className="aspect-[4/3] relative z-10 rounded-sm overflow-hidden shadow-xl">
+              <div className="aspect-[4/3] relative z-10 rounded-sm overflow-hidden ">
                 <Image 
                   src="/smiling_girl.png" 
                   alt="Our Philosophy" 

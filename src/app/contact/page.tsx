@@ -5,7 +5,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 export const metadata: Metadata = {
   title: "Contact Us | Luminary Learning",
   description: "Get in touch with our team for a free consultation about your child's education.",
-};
+}; 
 
 export default function ContactPage() {
   return (

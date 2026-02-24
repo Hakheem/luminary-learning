@@ -5,16 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function ContactForm() {
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState<{ type: 'success' | 'error' | 'sending' | null, message: string }>({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
-    setResult("Sending....");
+    setResult({ type: 'sending', message: "Sending..." });
     
     const formData = new FormData(event.currentTarget);
+    
+    // Add required Web3Forms fields
     formData.append("access_key", "442a4441-51e6-4817-b08c-4b39ab1ac03e");
+    formData.append("subject", "New Contact Form Submission from Luminary Learning");
+    formData.append("from_name", "Luminary Learning Website");
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -25,16 +29,29 @@ export default function ContactForm() {
       const data = await response.json();
       
       if (data.success) {
-        setResult("success");
+        setResult({ 
+          type: 'success', 
+          message: "Thanks! Your message has been sent. We'll get back to you within 24 hours." 
+        });
         event.currentTarget.reset();
-        setTimeout(() => setResult(""), 5000);
+        
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setResult({ type: null, message: "" });
+        }, 5000);
       } else {
-        setResult("error");
-        setTimeout(() => setResult(""), 5000);
+        console.error("Web3Forms error:", data);
+        setResult({ 
+          type: 'error', 
+          message: data.message || "Something went wrong. Please try again or email us directly." 
+        });
       }
     } catch (error) {
-      setResult("error");
-      setTimeout(() => setResult(""), 5000);
+      console.error("Fetch error:", error);
+      setResult({ 
+        type: 'error', 
+        message: "Network error. Please check your connection and try again." 
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -89,7 +106,7 @@ export default function ContactForm() {
       <Button 
         type="submit" 
         disabled={isSubmitting}
-        className="w-full h-12 text-base font-medium rounded-sm bg-primary hover:bg-primary/90 transition-all group"
+        className="w-full h-12 text-base font-medium rounded-sm bg-primary hover:bg-primary/90 transition-all group disabled:opacity-50"
       >
         {isSubmitting ? (
           "Sending..."
@@ -102,20 +119,30 @@ export default function ContactForm() {
       </Button>
 
       {/* Result Message */}
-      {result === "success" && (
-        <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 p-3 rounded-sm">
-          <CheckCircle className="h-4 w-4" />
-          Form Submitted Successfully! We'll get back to you soon.
+      {result.type === 'success' && (
+        <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 p-3 rounded-sm border border-green-200">
+          <CheckCircle className="h-4 w-4 flex-shrink-0" />
+          <span>{result.message}</span>
         </div>
       )}
       
-      {result === "error" && (
-        <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-sm">
-          <AlertCircle className="h-4 w-4" />
-          Something went wrong. Please try again or email us directly.
+      {result.type === 'error' && (
+        <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-sm border border-red-200">
+          <AlertCircle className="h-4 w-4 flex-shrink-0" />
+          <span>{result.message}</span>
+        </div>
+      )}
+
+      {result.type === 'sending' && (
+        <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-3 rounded-sm border border-blue-200">
+          <div className="h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span>{result.message}</span>
         </div>
       )}
     </form>
   );
 }
+
+
+
 

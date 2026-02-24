@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
@@ -11,6 +11,18 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname === path;
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -87,105 +99,109 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu - Conditionally rendered */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden" onClick={closeMenu} />
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden" 
+            onClick={closeMenu} 
+          />
+
+          {/* Menu Panel - Full height */}
+          <div className="fixed top-0 right-0 h-screen w-[280px] bg-white shadow-xl z-50 md:hidden overflow-y-auto">
+            <div className="flex flex-col min-h-screen p-6">
+              {/* Menu Header */}
+              <div className="flex justify-between items-center mb-8 pt-2">
+                <span className="font-title text-lg font-bold text-primary">Menu</span>
+                <button 
+                  onClick={closeMenu}
+                  className="p-1 text-foreground/60 hover:text-primary transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <div className="flex-1 space-y-6">
+                <div className="space-y-3">
+                  <Link 
+                    href="/programmes" 
+                    className={`block py-2 text-base font-medium transition-colors ${
+                      isActive('/programmes') 
+                        ? 'text-primary' 
+                        : 'text-foreground/80 hover:text-primary'
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Programmes
+                  </Link>
+                  <Link 
+                    href="/courses" 
+                    className={`block py-2 text-base font-medium transition-colors ${
+                      isActive('/courses') 
+                        ? 'text-primary' 
+                        : 'text-foreground/80 hover:text-primary'
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Courses
+                  </Link>
+                  <Link 
+                    href="/contact" 
+                    className={`block py-2 text-base font-medium transition-colors ${
+                      isActive('/contact') 
+                        ? 'text-primary' 
+                        : 'text-foreground/80 hover:text-primary'
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Contact
+                  </Link>
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-border/50 my-4" />
+
+                {/* Quick Info */}
+                <div className="space-y-3">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Get in touch
+                  </p>
+                  <a 
+                    href="mailto:hello@luminarylearning.com" 
+                    className="block text-sm text-foreground/80 hover:text-primary transition-colors"
+                    onClick={closeMenu}
+                  >
+                    hello@luminarylearning.com
+                  </a>
+                  <a 
+                    href="tel:+254769403162" 
+                    className="block text-sm text-foreground/80 hover:text-primary transition-colors"
+                    onClick={closeMenu}
+                  >
+                    +254 (769) 403-162
+                  </a>
+                </div>
+              </div>
+
+              {/* CTA Button at Bottom */}
+              <div className="pt-6 border-t border-border/50 mt-auto">
+                <Button 
+                  className="w-full rounded-sm h-12 bg-primary hover:bg-primary/90"
+                  onClick={closeMenu}
+                >
+                  Start Learning
+                </Button>
+                <p className="text-xs text-center text-muted-foreground mt-3">
+                  Join 10,000+ families
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
       )}
-
-      {/* Mobile Menu Slide-out */}
-      <div className={`
-        fixed top-0 right-0 h-full w-[280px] bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out md:hidden
-        ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-      `}>
-        <div className="flex flex-col h-full p-6">
-          {/* Menu Header */}
-          <div className="flex justify-between items-center mb-8">
-            <span className="font-title text-lg font-bold text-primary">Menu</span>
-            <button 
-              onClick={closeMenu}
-              className="p-1 text-foreground/60 hover:text-primary transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex-1 space-y-6">
-            <div className="space-y-3">
-              <Link 
-                href="/programmes" 
-                className={`block py-2 text-base font-medium transition-colors ${
-                  isActive('/programmes') 
-                    ? 'text-primary' 
-                    : 'text-foreground/80 hover:text-primary'
-                }`}
-                onClick={closeMenu}
-              >
-                Programmes
-              </Link>
-              <Link 
-                href="/courses" 
-                className={`block py-2 text-base font-medium transition-colors ${
-                  isActive('/courses') 
-                    ? 'text-primary' 
-                    : 'text-foreground/80 hover:text-primary'
-                }`}
-                onClick={closeMenu}
-              >
-                Courses
-              </Link>
-              <Link 
-                href="/contact" 
-                className={`block py-2 text-base font-medium transition-colors ${
-                  isActive('/contact') 
-                    ? 'text-primary' 
-                    : 'text-foreground/80 hover:text-primary'
-                }`}
-                onClick={closeMenu}
-              >
-                Contact
-              </Link>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-border/50 my-4" />
-
-            {/* Quick Info */}
-            <div className="space-y-3">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Get in touch
-              </p>
-              <a 
-                href="mailto:hello@luminarylearning.com" 
-                className="block text-sm text-foreground/80 hover:text-primary transition-colors"
-                onClick={closeMenu}
-              >
-                hello@luminarylearning.com
-              </a>
-              <a 
-                href="tel:+254769403162" 
-                className="block text-sm text-foreground/80 hover:text-primary transition-colors"
-                onClick={closeMenu}
-              >
-                +254 (769) 403-162
-              </a>
-            </div>
-          </div>
-
-          {/* CTA Button at Bottom */}
-          <div className="pt-6 border-t border-border/50">
-            <Button 
-              className="w-full rounded-sm h-12 bg-primary hover:bg-primary/90"
-              onClick={closeMenu}
-            >
-              Start Learning
-            </Button>
-            <p className="text-xs text-center text-muted-foreground mt-3">
-              Join 10,000+ families
-            </p>
-          </div>
-        </div>
-      </div>
     </nav>
   );
 }
