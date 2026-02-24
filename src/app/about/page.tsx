@@ -2,43 +2,49 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero / Vision Section */}
-      <section className="py-24 bg-slate-50">
+      <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <span className="text-sm font-bold text-primary uppercase tracking-[0.3em] mb-4 block">
               Our Mission
             </span>
-            <h1 className="font-title text-5xl md:text-7xl font-black mb-8 leading-tight">
-              Education Built for the <br />
-              <span className="text-primary">Individual.</span>
-            </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed font-medium">
-              Traditional classrooms were designed for the masses. We were built for the student who needs a different pace, a different focus, and a direct path to global success.
-            </p>
+           
+<h1 className="font-title text-5xl md:text-7xl font-black mb-8 leading-tight">
+  Education Built to <br />
+  <span className="text-primary">Fit Your Life.</span>
+</h1>
+<p className="text-xl text-muted-foreground leading-relaxed font-medium">
+  Whether it’s one-on-one deep dives for a single student or a coordinated curriculum for siblings, we build the schedule and the subjects around your home. No more juggling different schools, just one high standard for everyone.
+</p>
+
           </div>
         </div>
       </section>
 
-      {/* Philosophy Section - Image + Text */}
+      {/* Philosophy Section */}
       <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
-              <div className="aspect-[4/5] relative z-10 rounded-sm overflow-hidden shadow-2xl">
+              <div className="aspect-[4/3] relative z-10 rounded-sm overflow-hidden shadow-xl">
                 <Image 
-                  src="/philosophy.jpg" 
+                  src="/smiling_girl.png" 
                   alt="Our Philosophy" 
                   fill 
                   className="object-cover"
                 />
               </div>
               {/* Decorative background element */}
-              <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-accent/10 -z-0 rounded-sm" />
+              <div className="absolute -bottom-10 -left-10 w-44 h-44 bg-accent/10 -z-0 rounded-sm" />
+            </div>
+              <div className="absolute -top-10 -right-10 w-44 h-44 bg-accent/10 -z-0 rounded-sm" />
             </div>
 
             <div className="space-y-8">
@@ -58,7 +64,6 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
-        </div>
       </section>
 
       {/* Values Grid */}
@@ -90,9 +95,9 @@ export default function AboutPage() {
       <section className="py-24 text-center">
         <div className="container mx-auto px-4">
           <h2 className="font-title text-4xl font-bold mb-8">Ready to see the difference?</h2>
-          <button className="px-10 h-14 bg-primary text-white font-bold rounded-sm hover:bg-primary/90 transition-all shadow-xl">
+          <Button className="px-10 h-14 bg-primary text-white font-bold rounded-sm hover:bg-primary/90 transition-all shadow-xl">
             Meet Our Mentors
-          </button>
+          </Button>
         </div>
       </section>
     </main>
